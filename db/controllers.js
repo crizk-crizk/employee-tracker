@@ -8,7 +8,8 @@ connection.connect((err) => {
 
 // getting all employees from db
 const getAllRecords = (table) => {
-  connection.query(`SELECT * FROM ${table}`, (err, res) => {
+  const queryString = `SELECT * FROM ${table}`
+  connection.query(queryString, (err, res) => {
     if (err) throw err;
     // Log all results of the SELECT statement
     console.table(res);
