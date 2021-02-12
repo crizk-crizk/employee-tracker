@@ -6,29 +6,28 @@ CREATE DATABASE ice_creamDB;
 USE ice_creamDB;
 
 --DEPARTMENTS SCHEMA--
-CREATE TABLE products (
+CREATE TABLE department (
   id INT NOT NULL AUTO_INCREMENT,
-  flavor VARCHAR(45) NULL,
-  price DECIMAL(10,2) NULL,
-  quantity INT NULL,
+  name VARCHAR(45) NOT NULL,
   PRIMARY KEY (id)
 );
 
 --ROLES SCHEMA--
-CREATE TABLE products (
+CREATE TABLE role (
   id INT NOT NULL AUTO_INCREMENT,
-  flavor VARCHAR(45) NULL,
-  price DECIMAL(10,2) NULL,
-  quantity INT NULL,
+  title VARCHAR(45) NOT NULL,
+  salary DECIMAL() NOT NULL,
+  department_id INT NULL,
   PRIMARY KEY (id)
 );
 
 --EMPLOYEE SCHEMA--
-CREATE TABLE products (
+CREATE TABLE employee (
   id INT NOT NULL AUTO_INCREMENT,
-  flavor VARCHAR(45) NULL,
-  price DECIMAL(10,2) NULL,
-  quantity INT NULL,
+  first_name VARCHAR(45) NOT NULL,
+  last_name DECIMAL() NOT NULL,
+  role_id INT NULL,
+  manager_id INT NULL,
   PRIMARY KEY (id)
 );
 
