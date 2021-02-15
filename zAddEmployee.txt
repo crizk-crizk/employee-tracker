@@ -1,0 +1,39 @@
+
+function addEmployee() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "firstName",
+        message: "What is the employee's first name?",
+      },
+      {
+        type: "input",
+        name: "lastName",
+        message: "What is the employee's last name?",
+      },
+      {
+        type: "input",
+        name: "theirRole",
+        message: "What is the employee's role?",
+      },
+    ])
+    .then((employee) => {
+      const newEmployee = new Employee(
+        employee.firstName,
+        employee.lastName,
+        employee.theirRole,
+      );
+      console.log(newEmployee);
+      data..push(newEmployee);
+
+    })
+    .catch((error) => {
+      if (error.isTtyError) {
+        // Prompt couldn't be rendered in the current environment
+      } else {
+        // Something else went wrong
+      }
+    });
+}
+
