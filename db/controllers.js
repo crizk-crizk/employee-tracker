@@ -7,14 +7,34 @@ connection.connect((err) => {
 });
 
 // getting all employees from db
-const getAllRecords = (table) => {
+const getAllRecords = async (table) => {
+  let resolver;
+  const queryPromise = new Promise((resolve, reject) => {
+    resolver = resolve;
+  });
+
   const queryString = `SELECT * FROM ${table}`
   connection.query(queryString, (err, res) => {
     if (err) throw err;
     // Log all results of the SELECT statement
     console.table(res);
+    resolver(res);
   });
+  return queryPromise;
 };
-getAllRecords('employee');
 
-module.exports = getAllRecords;
+// exit/close the connection
+const endConnection = () => {
+  try {
+    connection.end();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// module.exports = getAllRecords;
+module.exports = {
+  getAllRecords,
+  endConnection
+};
+
