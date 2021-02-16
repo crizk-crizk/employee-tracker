@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const mysql = require('mysql');
 
 const connection = mysql.createConnection({
@@ -7,7 +9,7 @@ const connection = mysql.createConnection({
   // Your username
   user: 'root',
   // Be sure to update with your own MySQL password!
-  password: '',
+  password: process.env.DB_PASSWORD,
   database: 'employee_db',
 });
 
