@@ -7,7 +7,7 @@ USE employee_db;
 --DEPARTMENTS SCHEMA--
 CREATE TABLE department (
   id INT NOT NULL AUTO_INCREMENT,
-  name VARCHAR(45) NOT NULL,
+  name VARCHAR(30) NOT NULL,
   PRIMARY KEY (id)
 );
 
