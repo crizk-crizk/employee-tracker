@@ -16,3 +16,5 @@ const getAllRecords = (table) => {
   });
 };
 getAllRecords('employee');
+
+module.exports = getAllRecords;
