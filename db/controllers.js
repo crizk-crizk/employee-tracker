@@ -7,7 +7,7 @@ connection.connect((err) => {
 });
 
 // getting all employees from db
-const getAllRecords = async (table) => {
+const getAllRecords = async (table, showTable) => {
   let resolver;
   const queryPromise = new Promise((resolve, reject) => {
     resolver = resolve;
@@ -16,7 +16,9 @@ const getAllRecords = async (table) => {
   connection.query(queryString, (err, res) => {
     if (err) throw err;
     // Log all results of the SELECT statement
-    console.table(res);
+    if (showTable) {
+      console.table(res)
+    };
     resolver(res);
   });
   return queryPromise;
@@ -34,7 +36,7 @@ const queryManagers = async (table) => {
   connection.query(queryString, (err, res) => {
     if (err) throw err;
     // Log all results of the SELECT statement
-    console.table(res);
+    //console.table(res);
     resolver(res);
   });
   return queryPromise;
@@ -46,11 +48,6 @@ const queryEmployees = async (manager_id) => {
   const queryPromise = new Promise((resolve, reject) => {
     resolver = resolve;
   });
-  //
-  // const queryTeamMembers = connection.query(
-  //   `select id, first_name, last_name from employee_db.employee WHERE ?;`,
-  //   [{ manager_id: manager_id }]
-  // );
   connection.query(`select id, first_name, last_name from employee_db.employee WHERE ?;`,
   [{ manager_id: manager_id }]
 , (err, res) => {
@@ -63,8 +60,13 @@ const queryEmployees = async (manager_id) => {
 };
 
 //create employee
-const createEmployee = (first_name, last_name, role_id, manager_id) => {
-  console.log("Inserting a new user...\n");
+const createEmployee = async (first_name, last_name, role_id, manager_id) => {
+  let resolver;
+  const queryPromise = new Promise((resolve, reject) => {
+    resolver = resolve;
+  });
+
+  console.log("Inserting a new employee...\n");
   const query = connection.query(
     "INSERT INTO employee SET ?",
     {
@@ -75,11 +77,32 @@ const createEmployee = (first_name, last_name, role_id, manager_id) => {
     },
     (err, res) => {
       if (err) throw err;
-      console.log(`${res.affectedRows} user inserted!\n`);
+      //console.log(`${res.affectedRows} user inserted!\n`);
+      resolver(`${res.affectedRows} employee inserted!\n`);
     }
   );
-  // logs the actual query being run
-  console.log(query.sql);
+    return queryPromise;
+};
+
+// Add Role
+const createRole = async (title, salary, department_id) => {
+  let resolver;
+  const queryPromise = new Promise((resolve, reject) => {
+    resolver = resolve;
+  });
+
+  console.log("Inserting a new role...\n");
+  const query = connection.query(
+    "INSERT INTO role SET ?",
+    {
+      title, salary, department_id
+    },
+    (err, res) => {
+      if (err) throw err;
+      resolver(`${res.affectedRows} role inserted!\n`);
+    }
+  );
+  return queryPromise;
 };
 
 
@@ -98,5 +121,6 @@ module.exports = {
   endConnection,
   queryManagers,
   queryEmployees,
-  createEmployee
+  createEmployee,
+  createRole
 };
