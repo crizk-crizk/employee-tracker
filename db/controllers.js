@@ -105,6 +105,27 @@ const createRole = async (title, salary, department_id) => {
   return queryPromise;
 };
 
+// function goes with updateEmployeeRole prompt
+const updateEmployeeById = async (roleID, employeeID) => {
+  let resolver;
+  const queryPromise = new Promise((resolve, reject) => {
+    resolver = resolve;
+  });
+
+  console.log("Updating role...\n");
+  const queryStr = `UPDATE employee
+  SET role_id = ${roleID}
+  WHERE id = ${employeeID};`
+
+  connection.query(
+    queryStr, (err, res) => {
+      if (err) throw err;
+      resolver(`${res.affectedRows} role updated!\n`);
+    }
+  );
+  return queryPromise;
+};
+
 
 // exit/close the connection
 const endConnection = () => {
@@ -122,5 +143,6 @@ module.exports = {
   queryManagers,
   queryEmployees,
   createEmployee,
-  createRole
+  createRole,
+  updateEmployeeById
 };

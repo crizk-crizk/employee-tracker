@@ -6,7 +6,8 @@ const {
   queryManagers,
   queryEmployees,
   createEmployee,
-  createRole
+  createRole,
+  updateEmployeeById
 } = require("./db/controllers");
 
 // 1st prompt
@@ -23,13 +24,12 @@ function startingPrompt() {
           "View Roles",
           "View Employees By Manager",
           "Add Employee",
-
-          //working on
           "Add Role",
-
+          
+          //working on:
           "Update Employee Role",
-          "Update Employee Manager",
 
+          "Update Employee Manager",
           "Remove Employee",
           "Remove Role",
         ],
@@ -64,13 +64,22 @@ function startingPrompt() {
       } else if (choice.whatToDo === "Add Role") {
         const department = await getAllRecords("department", false);
         const departmentResult = Object.values(JSON.parse(JSON.stringify(department)));
-
         addRole(departmentResult);
+
+
+      } else if (choice.whatToDo === "Update Employee Role") {
+        const allEmployees = await getAllRecords("employee", false);
+        const employeeResult = Object.values(JSON.parse(JSON.stringify(allEmployees)));
+        //console.log(result);
+        const roles = await getAllRecords("role", false);
+        const roleResult = Object.values(JSON.parse(JSON.stringify(roles)));
+
+        updateEmployeeRole(employeeResult, roleResult);
+
+
 
       } else if (choice === "Remove Employee") {
         removeEmployee();
-      } else if (choice === "Update Employee Role") {
-        updateEmployeeRole();
       } else if (choice === "Update Employee Manager") {
         updateEmployeeManager();
       } else if (choice === "View All Roles") {
@@ -191,6 +200,45 @@ function addRole(departments) {
 }
 
 
+function updateEmployeeRole(employeesParam, rolesParam) {
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "selectedEmployee",
+        message: "Select an Employee to update their role",
+        choices: employeesParam.map((employee) => {
+          return `${employee.id}: ${employee.first_name} ${employee.last_name}`;
+        }),
+      },
+      {
+        type: "list",
+        name: "selectedRole",
+        message: "Select the New Role",
+        choices: rolesParam.map((role) => {
+          return `${role.id}: ${role.title}`;
+        }),
+      },
+    ])
+    .then(async (choice) => {
+      //employee id
+      const selectedEmployee = choice.selectedEmployee;
+      const selectedEmployeeId = selectedEmployee.split(":")[0];
+      //role id
+      const selectedRole = choice.selectedRole;
+      const selectedRoleId = selectedRole.split(":")[0];
+      // call create function with the 4 parameters
+      await updateEmployeeById(
+        selectedRoleId,
+        selectedEmployeeId
+      );
+      console.log(`Role Updated!`);
+      quitOrContinue();
+    });
+}
+
+
+
 function quitOrContinue() {
   inquirer
     .prompt([
@@ -209,6 +257,8 @@ function quitOrContinue() {
       }
     });
 }
+
+
 
 module.exports = {
   startingPrompt,
