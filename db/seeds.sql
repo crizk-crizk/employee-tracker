@@ -25,7 +25,7 @@ INSERT INTO role (title, salary, department_id)
 VALUES ("Software Eng", 120000, 4);
 
 INSERT INTO role (title, salary, department_id)
-VALUES ("Team Lead", 180000, 4);
+VALUES ("Manager", 180000, 4);
 
 --employee seeds--
 -- team lead
