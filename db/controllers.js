@@ -17,8 +17,8 @@ const getAllRecords = async (table, showTable) => {
     if (err) throw err;
     // Log all results of the SELECT statement
     if (showTable) {
-      console.table(res)
-    };
+      console.table(res);
+    }
     resolver(res);
   });
   return queryPromise;
@@ -48,14 +48,16 @@ const queryEmployees = async (manager_id) => {
   const queryPromise = new Promise((resolve, reject) => {
     resolver = resolve;
   });
-  connection.query(`select id, first_name, last_name from employee_db.employee WHERE ?;`,
-  [{ manager_id: manager_id }]
-, (err, res) => {
-    if (err) throw err;
-    // Log 
-    console.table(res);
-    resolver(res);
-  });
+  connection.query(
+    `select id, first_name, last_name from employee_db.employee WHERE ?;`,
+    [{ manager_id: manager_id }],
+    (err, res) => {
+      if (err) throw err;
+      // Log
+      console.table(res);
+      resolver(res);
+    }
+  );
   return queryPromise;
 };
 
@@ -73,7 +75,7 @@ const createEmployee = async (first_name, last_name, role_id, manager_id) => {
       first_name: first_name,
       last_name: last_name,
       role_id: role_id,
-      manager_id: manager_id
+      manager_id: manager_id,
     },
     (err, res) => {
       if (err) throw err;
@@ -81,7 +83,7 @@ const createEmployee = async (first_name, last_name, role_id, manager_id) => {
       resolver(`${res.affectedRows} employee inserted!\n`);
     }
   );
-    return queryPromise;
+  return queryPromise;
 };
 
 // Add Role
@@ -95,7 +97,9 @@ const createRole = async (title, salary, department_id) => {
   const query = connection.query(
     "INSERT INTO role SET ?",
     {
-      title, salary, department_id
+      title,
+      salary,
+      department_id,
     },
     (err, res) => {
       if (err) throw err;
@@ -115,17 +119,14 @@ const updateEmployeeById = async (roleID, employeeID) => {
   console.log("Updating role...\n");
   const queryStr = `UPDATE employee
   SET role_id = ${roleID}
-  WHERE id = ${employeeID};`
+  WHERE id = ${employeeID};`;
 
-  connection.query(
-    queryStr, (err, res) => {
-      if (err) throw err;
-      resolver(`${res.affectedRows} role updated!\n`);
-    }
-  );
+  connection.query(queryStr, (err, res) => {
+    if (err) throw err;
+    resolver(`${res.affectedRows} role updated!\n`);
+  });
   return queryPromise;
 };
-
 
 // exit/close the connection
 const endConnection = () => {
@@ -136,7 +137,6 @@ const endConnection = () => {
   }
 };
 
-// module.exports = getAllRecords;
 module.exports = {
   getAllRecords,
   endConnection,
@@ -144,5 +144,5 @@ module.exports = {
   queryEmployees,
   createEmployee,
   createRole,
-  updateEmployeeById
+  updateEmployeeById,
 };
