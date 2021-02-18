@@ -17,8 +17,8 @@ const getAllRecords = async (table, showTable) => {
     if (err) throw err;
     // Log all results of the SELECT statement
     if (showTable) {
-      console.table(res)
-    };
+      console.table(res);
+    }
     resolver(res);
   });
   return queryPromise;
@@ -30,7 +30,6 @@ const queryManagers = async (table) => {
   const queryPromise = new Promise((resolve, reject) => {
     resolver = resolve;
   });
-
   // get all managers' id, name, surname.
   const queryString = `select id, first_name, last_name from employee_db.employee WHERE id in (SELECT DISTINCT manager_id FROM employee_db.employee WHERE manager_id is not null);`;
   connection.query(queryString, (err, res) => {
@@ -42,30 +41,31 @@ const queryManagers = async (table) => {
   return queryPromise;
 };
 
-// getting team members under a manager
+// getting team members under one specific manager. Function called in peopleUnderAManager prompt
 const queryEmployees = async (manager_id) => {
   let resolver;
   const queryPromise = new Promise((resolve, reject) => {
     resolver = resolve;
   });
-  connection.query(`select id, first_name, last_name from employee_db.employee WHERE ?;`,
-  [{ manager_id: manager_id }]
-, (err, res) => {
-    if (err) throw err;
-    // Log 
-    console.table(res);
-    resolver(res);
-  });
+  connection.query(
+    `select id, first_name, last_name from employee_db.employee WHERE ?;`,
+    [{ manager_id: manager_id }],
+    (err, res) => {
+      if (err) throw err;
+      // display a pretty table
+      console.table(res);
+      resolver(res);
+    }
+  );
   return queryPromise;
 };
 
-//create employee
+//create employee for addEmployee prompt
 const createEmployee = async (first_name, last_name, role_id, manager_id) => {
   let resolver;
   const queryPromise = new Promise((resolve, reject) => {
     resolver = resolve;
   });
-
   console.log("Inserting a new employee...\n");
   const query = connection.query(
     "INSERT INTO employee SET ?",
@@ -73,7 +73,7 @@ const createEmployee = async (first_name, last_name, role_id, manager_id) => {
       first_name: first_name,
       last_name: last_name,
       role_id: role_id,
-      manager_id: manager_id
+      manager_id: manager_id,
     },
     (err, res) => {
       if (err) throw err;
@@ -81,21 +81,22 @@ const createEmployee = async (first_name, last_name, role_id, manager_id) => {
       resolver(`${res.affectedRows} employee inserted!\n`);
     }
   );
-    return queryPromise;
+  return queryPromise;
 };
 
-// Add Role
+// Function called in AddRole prompt
 const createRole = async (title, salary, department_id) => {
   let resolver;
   const queryPromise = new Promise((resolve, reject) => {
     resolver = resolve;
   });
-
   console.log("Inserting a new role...\n");
   const query = connection.query(
     "INSERT INTO role SET ?",
     {
-      title, salary, department_id
+      title,
+      salary,
+      department_id,
     },
     (err, res) => {
       if (err) throw err;
@@ -115,17 +116,14 @@ const updateEmployeeById = async (roleID, employeeID) => {
   console.log("Updating role...\n");
   const queryStr = `UPDATE employee
   SET role_id = ${roleID}
-  WHERE id = ${employeeID};`
+  WHERE id = ${employeeID};`;
 
-  connection.query(
-    queryStr, (err, res) => {
-      if (err) throw err;
-      resolver(`${res.affectedRows} role updated!\n`);
-    }
-  );
+  connection.query(queryStr, (err, res) => {
+    if (err) throw err;
+    resolver(`${res.affectedRows} role updated!\n`);
+  });
   return queryPromise;
 };
-
 
 // exit/close the connection
 const endConnection = () => {
@@ -136,7 +134,6 @@ const endConnection = () => {
   }
 };
 
-// module.exports = getAllRecords;
 module.exports = {
   getAllRecords,
   endConnection,
@@ -144,5 +141,5 @@ module.exports = {
   queryEmployees,
   createEmployee,
   createRole,
-  updateEmployeeById
+  updateEmployeeById,
 };

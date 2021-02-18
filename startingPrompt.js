@@ -7,7 +7,7 @@ const {
   queryEmployees,
   createEmployee,
   createRole,
-  updateEmployeeById
+  updateEmployeeById,
 } = require("./db/controllers");
 
 // 1st prompt
@@ -25,13 +25,11 @@ function startingPrompt() {
           "View Employees By Manager",
           "Add Employee",
           "Add Role",
-          
-          //working on:
           "Update Employee Role",
-
-          "Update Employee Manager",
-          "Remove Employee",
-          "Remove Role",
+          //future features:
+          // "Update Employee Manager",
+          // "Remove Employee",
+          // "Remove Role",
         ],
       },
     ])
@@ -51,7 +49,6 @@ function startingPrompt() {
         const result = Object.values(JSON.parse(JSON.stringify(managers)));
         //console.log(result);
         peopleUnderAManager(result);
-
       } else if (choice.whatToDo === "Add Employee") {
         const managers = await queryManagers();
         const result = Object.values(JSON.parse(JSON.stringify(managers)));
@@ -59,33 +56,21 @@ function startingPrompt() {
         const roles = await getAllRecords("role", false);
         const roleResult = Object.values(JSON.parse(JSON.stringify(roles)));
         addEmployee(result, roleResult);
-        
-
       } else if (choice.whatToDo === "Add Role") {
         const department = await getAllRecords("department", false);
-        const departmentResult = Object.values(JSON.parse(JSON.stringify(department)));
+        const departmentResult = Object.values(
+          JSON.parse(JSON.stringify(department))
+        );
         addRole(departmentResult);
-
-
       } else if (choice.whatToDo === "Update Employee Role") {
         const allEmployees = await getAllRecords("employee", false);
-        const employeeResult = Object.values(JSON.parse(JSON.stringify(allEmployees)));
+        const employeeResult = Object.values(
+          JSON.parse(JSON.stringify(allEmployees))
+        );
         //console.log(result);
         const roles = await getAllRecords("role", false);
         const roleResult = Object.values(JSON.parse(JSON.stringify(roles)));
-
         updateEmployeeRole(employeeResult, roleResult);
-
-
-
-      } else if (choice === "Remove Employee") {
-        removeEmployee();
-      } else if (choice === "Update Employee Manager") {
-        updateEmployeeManager();
-      } else if (choice === "View All Roles") {
-        viewAllRoles();
-      } else if (choice === "Remove Role") {
-        removeRole();
       } else {
         endConnection();
       }
@@ -189,16 +174,11 @@ function addRole(departments) {
       const selectedDepartment = choice.selectedDepartment;
       const selectedDepartmentId = selectedDepartment.split(":")[0];
       // call create function with the 4 parameters
-      await createRole(
-        choice.title,
-        choice.salary,
-        selectedDepartmentId
-      );
+      await createRole(choice.title, choice.salary, selectedDepartmentId);
       console.log(`Role Added!`);
       quitOrContinue();
     });
 }
-
 
 function updateEmployeeRole(employeesParam, rolesParam) {
   inquirer
@@ -228,16 +208,11 @@ function updateEmployeeRole(employeesParam, rolesParam) {
       const selectedRole = choice.selectedRole;
       const selectedRoleId = selectedRole.split(":")[0];
       // call create function with the 4 parameters
-      await updateEmployeeById(
-        selectedRoleId,
-        selectedEmployeeId
-      );
+      await updateEmployeeById(selectedRoleId, selectedEmployeeId);
       console.log(`Role Updated!`);
       quitOrContinue();
     });
 }
-
-
 
 function quitOrContinue() {
   inquirer
@@ -257,8 +232,6 @@ function quitOrContinue() {
       }
     });
 }
-
-
 
 module.exports = {
   startingPrompt,
